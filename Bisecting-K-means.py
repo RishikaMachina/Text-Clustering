@@ -1,7 +1,7 @@
 class file_read():
     def __init__(self):
         pass
-    
+   
     def read_file(self):
         with open("train.dat") as file:
             line = file.readlines()
