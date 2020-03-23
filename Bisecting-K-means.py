@@ -32,3 +32,16 @@ class file_read():
 
         return csr_matrix((data, indices, indptr), shape=(rows, cols), dtype = np.float)
     
+    def norm(self, mat):
+        rows = mat.shape[0]
+        val, p =  mat.data, mat.indptr
+        for i in range(rows):
+            row_Sums = 0.0    
+            for j in range(p[i], p[i+1]):
+                row_Sums += val[j]**2
+            if row_Sums == 0.0:
+                continue 
+            row_Sums = float(1.0 / np.sqrt(row_Sums))
+            for j in range(p[i], p[i+1]):
+                val[j] *= row_Sums
+    
