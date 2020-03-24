@@ -45,3 +45,42 @@ class file_read():
             for j in range(p[i], p[i+1]):
                 val[j] *= row_Sums
     
+class modeling(file_read):
+    def __init__(self):
+        pass
+    
+    def Cluster(mat, centroids):
+        valueList = list()
+        matrixsimilarity = mat.dot(centroids.T)
+
+        for i in range(matrixsimilarity.shape[0]):
+            row = matrixsimilarity.getrow(i).toarray()[0].ravel()
+            indicestop = row.argsort()[-1]
+            valueList.append(indicestop + 1)
+        return valueList
+
+    def bisectingKMeans(self, mat, z):
+        d = mat
+        final_clusters = []   
+        present_clusters = []      
+        for i in range(mat.shape[0]):
+            present_clusters.append(i)
+
+        while len(final_clusters) < z - 1:
+            error_first_cluster = 0
+            error_second_cluster = 0
+            onelist, twolist, one_cluster, two_cluster, one, two = Kmean(mat, d, present_clusters)
+            for row in one_cluster:
+                error_first_cluster += (euclidean(row.toarray(),one.toarray()))**2
+            for row in two_cluster:
+                error_second_cluster += (euclidean(row.toarray(),two.toarray()))**2    
+            if error_first_cluster < error_second_cluster:
+                final_clusters.append(onelist)
+                present_clusters = twolist
+                d = two_cluster
+            else:
+                final_clusters.append(twolist)
+                present_clusters = onelist
+                d = one_cluster
+        final_clusters.append(present_clusters)
+        return final_clusters
