@@ -84,3 +84,44 @@ class modeling(file_read):
                 d = one_cluster
         final_clusters.append(present_clusters)
         return final_clusters
+
+    
+from collections import Counter, defaultdict
+import random
+import numpy as np
+from numpy.linalg import norm
+from scipy.spatial.distance import euclidean
+import scipy.sparse
+from sklearn.utils import shuffle
+from scipy.sparse import find, csr_matrix
+
+prog = modeling()
+mat = prog.read_file()
+prog.norm(mat)
+cal = prog.bisectingKMeans(mat,7)
+
+pred = [0]* mat.shape[0]
+for i in range(len(cal)):
+    for j in range(len(cal[i])):
+        pred[cal[i][j]] = i + 1
+        
+d = {}
+for i in range(len(cal)):
+    for j in range(len(cal[i])):
+        d[cal[i][j]] = i
+
+final = []
+for key in sorted(d.keys()):
+    final.append(d[key]) 
+    
+    
+ui = []
+ui.append('ItemID,ClusterID\n')
+for i in range(len(final)):
+    tr = ""
+    tr += str(str((i+1)) +','+ str(final[i]))
+    ui.append(tr)
+
+file = open('final.dat',"w")
+file.write("\n".join(map(lambda x: x, ui)))
+file.close()
